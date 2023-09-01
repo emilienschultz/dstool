@@ -3,7 +3,7 @@
 ## Objectifs
 
 
-*Contexte* : alors que le format numérique des données s'impose, la période est au renforcement des préconisation sur le rapport aux données dans la recherche (ex. principes FAIR) pour favoriser la collaboration et le partage.
+**Contexte** : alors que le format numérique des données s'impose, la période est au renforcement des préconisation sur le rapport aux données dans la recherche (ex. principes FAIR) pour favoriser la collaboration et le partage.
 
 *Question* : quelles sont les bonnes pratiques générales à recommander sur la collecte et le traitement des données dans l'enseignement de l'enquête en sciences sociales qui soient le plus possibles agnostiques par rapport aux méthodes utilisées ?
 
