@@ -62,7 +62,7 @@ Partir du principe qu'il faut pouvoir revenir à ses données même après une p
 
 Réfléchir sur les données est une collaboration entre le jugement humain et l'ordinateur. Dans l'idéal, donnez-vous la possibilité de simplifier le travail pour les deux. Cela passe notamment par l'usage de formats libres de fichier facilitant l'interopérabilité. Un format de fichier libre signifie qu'il peut être accessible par une diversité de logiciel. Pour les tableurs, cela signifie un stockage en CSV ou en XLSX. Pour les fichiers textes, le format TXT, et éventuellement DOCX. Pour des données plus complexes, cela peut être par exemple un format JSON qui va cependant être difficile à lire par un humain. Dans tous les cas, évitez si possibles des formats spécifiques à un seul logiciel ou uniquement pour l'humain (par exemple les PDF)
 
-- *Maximiser la modularité*
+- **Maximiser la modularité**
 
 S'il est possible de ne pas mélanger deux éléments ensemble, s'assurer de le faire. S'il y a plusieurs types de données collectées, les conserver dans des ensembles séparer tout en s'assurant de la possibilité de pouvoir les relier ensemble, par exemple avec un identifiant commun. Dans certains cas, cela peut poser la question de construire un registre (un tableur avec des informations pour chaque donnée collectée) voire une base de données.
 
