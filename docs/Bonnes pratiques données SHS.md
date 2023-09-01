@@ -2,7 +2,6 @@
 
 ## Positionnement de la démarche
 
-
 *Contexte* : alors que le format numérique des données s'impose, la période est au renforcement des préconisation sur le rapport aux données dans la recherche (ex. principes FAIR) pour favoriser la collaboration et le partage.
 
 *Question* : quelles sont les bonnes pratiques générales à recommander sur la collecte et le traitement des données dans l'enseignement de l'enquête en sciences sociales qui soient le plus possibles agnostiques par rapport aux méthodes utilisées ?
@@ -144,3 +143,8 @@ Suivant ce que vous partagez, pensez à préciser le type de licence - les droit
 - Célya Gruson-Daniel, Groupe Projet Réussir L'Appropriation De La Science Ouverte. Décliner la science ouverte : Rapport final. [Rapport de recherche] Comité pour la science ouverte. 2022, 149 p. ⟨hal-03798504⟩
 - Open Science Training Handbook, https://open-science-training-handbook.github.io/Open-Science-TrainingHandbook_FR/
 - How to write a data management plan https://libguides.colostate.edu/data-donuts/dmp
+
+## Contributeurs
+
+- Émilien Schultz, formé en physique et docteur en sociologie, naviguant entre les sciences sociales computationnelles et non computationnelles
+- ... 
