@@ -1,6 +1,6 @@
 # Quelques bonnes pratiques génériques pour les données numériques en sciences sociales
 
-## Objectifs
+## Positionnement de la démarche
 
 
 *Contexte* : alors que le format numérique des données s'impose, la période est au renforcement des préconisation sur le rapport aux données dans la recherche (ex. principes FAIR) pour favoriser la collaboration et le partage.
@@ -9,8 +9,8 @@
 
 *Problèmes* : 
 
-(1) il existe une diversité de méthodes en sciences sociales allant de l'observation aux approches computationnelles ; 
-(2) le formalisme et la complexité de certaines règles formulées pour la science ouverte les rend difficilement utilisables pour des enquêtes par des étudiants ;
+1. il existe une diversité de méthodes en sciences sociales allant de l'observation aux approches computationnelles ; 
+2. le formalisme et la complexité de certaines règles formulées pour la science ouverte les rend difficilement utilisables pour des enquêtes par des étudiants ;
 
 *Objectif* : construire une fiche destinée à un enseignement de sciences sociales sur la réflexion autour des données afin de favoriser leur constitution et leur usage efficace dans un cadre collaboratif où le type de données utilisées n'est pas défini a priori et peut éventuellement évoluer.
 
