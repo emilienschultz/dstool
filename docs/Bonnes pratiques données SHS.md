@@ -1,5 +1,7 @@
 # Quelques bonnes pratiques génériques pour les données numériques en sciences sociales
 
+v0.1 31/08/2023
+
 ## Positionnement de la démarche
 
 *Contexte* : alors que le format numérique des données s'impose, la période est au renforcement des préconisation sur le rapport aux données dans la recherche (ex. principes FAIR) pour favoriser la collaboration et le partage.
