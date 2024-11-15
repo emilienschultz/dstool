@@ -4,3 +4,4 @@ lxml
 streamlit
 regex
 matplotlib
+xlsxwriter
