@@ -137,6 +137,7 @@ if pd.notnull(file):
                 key="download-file2",
             )
 
+st.markdown("""---""")
 
 st.subheader("Outil 3 : Création de graphique temporel à partir d'un fichier XLSX")
 st.write("""Le fichier doit avoir une colonne **Date** avec les dates au format *Année-Mois-Jour* ou *Année* 
