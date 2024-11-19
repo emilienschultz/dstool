@@ -27,15 +27,21 @@ def convert_df(df, format="xlsx"):
     return None
 
 
-st.title("Outil 1 : Transformation Europresse/Factiva HTML vers XLSX")
+st.title("DSTool - Outils pour l'annotation de corpus de presse")
+
+st.write("La démarche prévue est la suivante")
+st.markdown("""
+            - Convertir un corpus HTML > XLSX
+            - Découper les textes en éléments contenant certains mots-clés
+            - Faire une courbe sur les codage
+            """)
+
+st.subheader("Outil 1 : Convertir Europresse/Factiva HTML > XLSX")
 st.write(
     "Les fichiers doivent être en HTML dans le format de sortie d'Europresse/version classique ou Factiva"
 )
 st.write(
-    "Attention de bien sélectionner soit Europresse soit Factiva en fonction des sources"
-)
-st.write(
-    "*Attention : certaines sources non journalistiques comme Agrobusiness report ne sont pas très bien parsées (champs nuls dans le tableau final)*"
+    "*Attention : Attention de bien sélectionner soit Europresse soit Factiva en fonction des sources. Certaines sources non journalistiques comme Agrobusiness report ne sont pas très bien parsées (champs nuls dans le tableau final)*"
 )
 
 source = st.selectbox("Source des données", ("europresse", "factiva"))
@@ -64,12 +70,75 @@ if len(uploaded_files) > 0:
         data,
         f"{uploaded_file.name.replace('.html','').replace('.HTML','')}.xlsx",
         "text/csv",
-        key="download-file",
+        key="download-file1",
     )
 
 st.markdown("""---""")
 
-st.title("Outil 2 : Création de graphique temporel à partir d'un fichier XLSX")
+
+st.subheader(
+    "Outil 2 : Extraire les phrases d'un corpus de texte contenant des mots (.xlsx)"
+)
+st.write(
+    """Le filtre est une expression régulière (regex). La coupure entre les phrases se fait sur les point (., !, ?) et les retours à la ligne
+    
+    """
+)
+
+
+def extract_sentences(text, num_phrases, regex):
+    """
+    Extract sentences from a text with a regex and the frame context
+    """
+    text = text.replace(". ", "\n")
+    text = text.replace("?", "\n")
+    text = text.replace("!", "\n")
+    sentences = text.split("\n")
+    sentences = [
+        "\n".join(
+            sentences[max(i - num_phrases, 0) : min(i + num_phrases, len(sentences))]
+        )
+        for i in range(0, len(sentences))
+        if re.search(regex, sentences[i])
+    ]
+    return sentences
+
+
+# upload the file
+file = st.file_uploader(
+    "Choisir un fichier .xlsx", accept_multiple_files=False, key="outil3"
+)
+# if file
+if pd.notnull(file):
+    df = pd.read_excel(file)
+    col_text = st.selectbox("Colonne textes", df.columns)
+    val_regex = st.text_input("Saisir une expression régulière", value="vélo")
+    num_phrases = st.number_input("Nombre de phrases avant/après", value=1)
+
+    if st.button("Validate"):
+        if col_text in df.columns:
+            df = df.dropna(subset=[col_text])
+            df["explode_sentences"] = df[col_text].apply(
+                lambda x: extract_sentences(x, num_phrases, val_regex)
+            )
+            df = df.explode("explode_sentences")
+            df = df[df["explode_sentences"].str.contains(val_regex).fillna(False)]
+            df.rename(
+                columns={"explode_sentences": f"phrases_{2*num_phrases+1}"},
+                inplace=True,
+            )
+            data = convert_df(df, format="xlsx")
+            st.write("Le fichier contient %s lignes qui valident la regex" % len(df))
+            st.download_button(
+                "Télécharger le tableau en xlsx",
+                data,
+                f"exploded_{file.name}",
+                "text/csv",
+                key="download-file2",
+            )
+
+
+st.subheader("Outil 3 : Création de graphique temporel à partir d'un fichier XLSX")
 st.write("""Le fichier doit avoir une colonne **Date** avec les dates au format *Année-Mois-Jour* ou *Année* 
          et une colonne **Codage** avec un ou des codes non nuls (code unique = une seule courbe ; 
          plusieurs codes = plusieurs courbes)""")
@@ -122,65 +191,6 @@ if pd.notnull(file):
     else:
         fig = tracer_graphique(df, d)
         st.pyplot(fig)
-
-
-st.title(
-    "Outil 3 : Extraire les phrases d'un corpus de texte contenant des mots (.xlsx)"
-)
-st.write(
-    """L'entrée recherchée doit être une regex en python. Le fichier doit avoir une colonne **Texte** contenant un corpus de textes. 
-    Le reste des colonnes sera conservé. 
-    La coupure se fera sur les point (., !, ?) et les retours à la ligne
-    """
-)
-
-
-def extract_sentences(text, num_phrases, regex):
-    """
-    Extract sentences from a text with a regex and the frame context
-    """
-    text = text.replace(". ", "\n")
-    text = text.replace("?", "\n")
-    text = text.replace("!", "\n")
-    sentences = text.split("\n")
-    sentences = [
-        "\n".join(
-            sentences[max(i - num_phrases, 0) : min(i + num_phrases, len(sentences))]
-        )
-        for i in range(0, len(sentences))
-        if re.search(regex, sentences[i])
-    ]
-    return sentences
-
-
-# upload the file
-file = st.file_uploader(
-    "Choisir un fichier .xlsx", accept_multiple_files=False, key="outil3"
-)
-# if file
-if pd.notnull(file):
-    df = pd.read_excel(file)
-    col_text = st.selectbox("Colonne textes", df.columns)
-    val_regex = st.text_input("Saisir une expression régulière", value="vélo")
-    num_phrases = st.number_input("Nombre de phrases avant/après", value=1)
-
-    if st.button("Validate"):
-        if col_text in df.columns:
-            df = df.dropna(subset=[col_text])
-            df["explode_sentences"] = df[col_text].apply(
-                lambda x: extract_sentences(x, num_phrases, val_regex)
-            )
-            df = df.explode("explode_sentences")
-            df = df[df["explode_sentences"].str.contains(val_regex).fillna(False)]
-            data = convert_df(df, format="xlsx")
-            st.write("Le fichier contient %s lignes qui valident la regex" % len(df))
-            st.download_button(
-                "Télécharger le tableau en xlsx",
-                data,
-                f"{file.name}.xlsx",
-                "text/csv",
-                key="download-file",
-            )
 
 st.markdown("""---""")
 st.write("Le traitement utilise BeautifulSoup / Pandas / Streamlit")
