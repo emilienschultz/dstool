@@ -24,6 +24,13 @@ def convert_df(df, format="xlsx"):
         return output
     if format == "csv":
         return df.to_csv(index=False).encode("utf-8")
+    if format == "iramuteq":
+        output = io.StringIO()
+        for i, row in df.iterrows():
+            output.write(
+                f"**** *ID_{i}\n{str(row['Contenu_mod']).replace('*', '')} \n\n"
+            )
+
     return None
 
 
@@ -64,13 +71,21 @@ if len(uploaded_files) > 0:
             st.write("Taille du corpus %d" % len(corpus))
             df = factiva.get_table(corpus)
 
-    data = convert_df(df, format="xlsx")
+    data_excel = convert_df(df, format="xlsx")
+    data_iramuteq = convert_df(df, format="iramuteq")
     st.download_button(
         "Télécharger le tableau en xlsx",
-        data,
-        f"{uploaded_file.name.replace('.html','').replace('.HTML','')}.xlsx",
+        data_excel,
+        f"{uploaded_file.name.replace('.html', '').replace('.HTML', '')}.xlsx",
         "text/csv",
         key="download-file1",
+    )
+    st.download_button(
+        "Télécharger le fichier pour Iramuteq",
+        data_iramuteq,
+        f"{uploaded_file.name.replace('.html', '').replace('.HTML', '')}.txt",
+        "text/csv",
+        key="download-file2",
     )
 
 st.markdown("""---""")
@@ -124,13 +139,21 @@ if pd.notnull(file):
             df = df.explode("explode_sentences")
             df = df[df["explode_sentences"].str.contains(val_regex).fillna(False)]
             df.rename(
-                columns={"explode_sentences": f"phrases_{2*num_phrases+1}"},
+                columns={"explode_sentences": f"phrases_{2 * num_phrases + 1}"},
                 inplace=True,
             )
             data = convert_df(df, format="xlsx")
             st.write("Le fichier contient %s lignes qui valident la regex" % len(df))
             st.download_button(
                 "Télécharger le tableau en xlsx",
+                data,
+                f"exploded_{file.name}",
+                "text/csv",
+                key="download-file2",
+            )
+
+            st.download_button(
+                "Télécharger le fichier pour Iramuteq",
                 data,
                 f"exploded_{file.name}",
                 "text/csv",
@@ -192,9 +215,3 @@ if pd.notnull(file):
     else:
         fig = tracer_graphique(df, d)
         st.pyplot(fig)
-
-st.markdown("""---""")
-st.write("Le traitement utilise BeautifulSoup / Pandas / Streamlit")
-st.markdown(
-    "Pour tout problème, merci d'ouvrir une issue https://github.com/emilienschultz/dstool/issues"
-)
