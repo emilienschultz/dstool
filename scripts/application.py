@@ -1,11 +1,12 @@
 import io
 import re
 
-import europresse
-import factiva
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
+
+import europresse
+import factiva
 
 # Trois parties dans l'application :
 # - transformation Europresse -> CSV
@@ -28,9 +29,9 @@ def convert_df(df, format="xlsx"):
         output = io.StringIO()
         for i, row in df.iterrows():
             output.write(
-                f"**** *ID_{i}\n{str(row['Contenu_mod']).replace('*', '')} \n\n"
+                f"**** *ID_{i}\n{str(row['Contenu_mod']).replace('*', '')}\n\n"
             )
-
+        return output.getvalue().encode("utf-8")
     return None
 
 
@@ -72,7 +73,6 @@ if len(uploaded_files) > 0:
             df = factiva.get_table(corpus)
 
     data_excel = convert_df(df, format="xlsx")
-    data_iramuteq = convert_df(df, format="iramuteq")
     st.download_button(
         "Télécharger le tableau en xlsx",
         data_excel,
@@ -80,6 +80,7 @@ if len(uploaded_files) > 0:
         "text/csv",
         key="download-file1",
     )
+    data_iramuteq = convert_df(df, format="iramuteq")
     st.download_button(
         "Télécharger le fichier pour Iramuteq",
         data_iramuteq,
@@ -142,22 +143,23 @@ if pd.notnull(file):
                 columns={"explode_sentences": f"phrases_{2 * num_phrases + 1}"},
                 inplace=True,
             )
-            data = convert_df(df, format="xlsx")
+            data_excel = convert_df(df, format="xlsx")
             st.write("Le fichier contient %s lignes qui valident la regex" % len(df))
             st.download_button(
                 "Télécharger le tableau en xlsx",
-                data,
+                data_excel,
                 f"exploded_{file.name}",
                 "text/csv",
-                key="download-file2",
+                key="download-file3",
             )
 
+            data_iramuteq = convert_df(df, format="iramuteq")
             st.download_button(
                 "Télécharger le fichier pour Iramuteq",
-                data,
+                data_excel,
                 f"exploded_{file.name}",
                 "text/csv",
-                key="download-file2",
+                key="download-file4",
             )
 
 st.markdown("""---""")
