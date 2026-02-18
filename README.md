@@ -1,3 +1,5 @@
+https://docs.google.com/presentation/d/14_9_BRhvOmawxiBDXoEFYs2UQ3u1U2zdiM_JZlMEpEQ/edit?slide=id.p#slide=id.p
+
 # Outil pour les Enquêtes Numériques - Digital Surveys 
 
 - [Document des bonnes pratiques pour les données numériques en sciences sociales](https://github.com/emilienschultz/dstool/blob/main/docs/Bonnes%20pratiques%20donn%C3%A9es%20SHS.md)
