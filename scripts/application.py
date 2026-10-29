@@ -1,5 +1,6 @@
 import io
 import re
+import unicodedata
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -16,7 +17,13 @@ import factiva
 
 # Fonction convertissat en format
 @st.cache_data
-def convert_df(df, format="xlsx"):
+def convert_df(
+    df,
+    format="xlsx",
+    col_text="Contenu_mod",
+    col_date="Date_mod",
+    col_journal="Journal_mod",
+):
     if format == "xlsx":
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
@@ -28,11 +35,32 @@ def convert_df(df, format="xlsx"):
     if format == "iramuteq":
         output = io.StringIO()
         for i, row in df.iterrows():
-            output.write(
-                f"**** *ID_{i}\n{str(row['Contenu_mod']).replace('*', '')}\n\n"
-            )
+            variables = [f"*ID_{i}"]
+            # Année de l'article (variable *annee_AAAA)
+            if col_date in df.columns and pd.notnull(row[col_date]):
+                annee = pd.to_datetime(row[col_date], errors="coerce")
+                if pd.notnull(annee):
+                    variables.append(f"*annee_{annee.year}")
+            # Journal (variable *journal_nom_du_journal)
+            if col_journal in df.columns and pd.notnull(row[col_journal]):
+                journal = iramuteq_modality(row[col_journal])
+                if journal:
+                    variables.append(f"*journal_{journal}")
+            texte = str(row[col_text]).replace("*", "") if col_text in df.columns else ""
+            output.write(f"**** {' '.join(variables)}\n{texte}\n\n")
         return output.getvalue().encode("utf-8")
     return None
+
+
+def iramuteq_modality(value):
+    """
+    Nettoyer une modalité pour Iramuteq : pas d'accents, pas d'espaces,
+    uniquement des lettres/chiffres et des underscores
+    """
+    value = unicodedata.normalize("NFKD", str(value))
+    value = value.encode("ascii", "ignore").decode("ascii").lower()
+    value = re.sub(r"[^a-z0-9]+", "_", value).strip("_")
+    return value
 
 
 st.title("DSTool - Outils pour l'annotation de corpus de presse")
@@ -153,11 +181,13 @@ if pd.notnull(file):
                 key="download-file3",
             )
 
-            data_iramuteq = convert_df(df, format="iramuteq")
+            data_iramuteq = convert_df(
+                df, format="iramuteq", col_text=f"phrases_{2 * num_phrases + 1}"
+            )
             st.download_button(
                 "Télécharger le fichier pour Iramuteq",
-                data_excel,
-                f"exploded_{file.name}",
+                data_iramuteq,
+                f"exploded_{file.name.rsplit('.', 1)[0]}.txt",
                 "text/csv",
                 key="download-file4",
             )
